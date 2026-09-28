@@ -11,27 +11,27 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
 
   return (
     <main className="min-h-svh bg-sand-100 text-ink">
-      <section className="relative h-[78svh] min-h-[520px] w-full overflow-hidden">
+      <section className="relative h-[72svh] min-h-[500px] w-full overflow-hidden sm:h-[78svh] sm:min-h-[520px]">
         <Image
           src="/photos/sky.jpg"
           alt="Amir and Yasmin facing each other against a soft evening sky"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[50%_85%]"
+          className="object-cover object-[50%_100%] sm:object-[50%_85%]"
         />
         {/* Fade the bottom of the photo into the page. */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-sand-100" />
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b sm:h-40 from-transparent to-sand-100" />
         <div className="film-grain relative z-10 flex h-full flex-col items-center px-6 pt-14 text-center sm:pt-20">
           <p className="rise text-[11px] uppercase tracking-[0.35em] text-ink/70 sm:tracking-[0.5em]">March 2027 · Singapore</p>
-          <Names className="rise rise-2 mt-6 text-[clamp(3.5rem,11vw,8rem)] text-ink" />
+          <Names className="rise rise-2 mt-6 whitespace-nowrap text-[clamp(2.75rem,11vw,8rem)] text-ink" />
           <p className="rise rise-3 mt-5 max-w-md font-serif text-xl italic text-ink/80">
             are getting married — and we&rsquo;d love for you to be there.
           </p>
         </div>
       </section>
 
-      <section className="relative z-10 -mt-24 px-4 pb-20 sm:-mt-12 sm:px-6">
+      <section className="relative z-10 mt-2 px-4 pb-20 sm:-mt-12 sm:px-6">
         <div className="mx-auto w-full max-w-sm space-y-5 rounded-sm bg-white/80 px-6 py-7 shadow-[0_20px_60px_-30px_rgba(58,48,41,0.35)] ring-1 ring-sand-300 backdrop-blur">
           <div className="text-center">
             <p className="text-[11px] uppercase tracking-[0.35em] text-gold">You&rsquo;re invited</p>
