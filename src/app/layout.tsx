@@ -17,8 +17,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Amir & Yasmin — 13–15 March 2027",
-  description: "RSVP for Amir & Yasmin's wedding celebrations.",
+  title: "Amir & Yasmin",
+  description: "You're invited — RSVP for Amir & Yasmin's wedding.",
   robots: { index: false, follow: false },
 };
 

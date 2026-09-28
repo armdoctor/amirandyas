@@ -3,12 +3,12 @@ import { VENUE } from "@/lib/events";
 // Placeholder answers marked [TBC] need the couple's confirmation.
 export const FAQS: { q: string; a: string }[] = [
   {
-    q: "Where are the celebrations?",
-    a: `All five celebrations are held at ${VENUE.hall}, ${VENUE.name} — ${VENUE.address}.`,
+    q: "Where is it?",
+    a: `${VENUE.hall}, ${VENUE.name} — ${VENUE.address}.`,
   },
   {
     q: "What time should I arrive?",
-    a: "For the solemnisation, please be seated by 9:00 am. For each reception, please be seated by 30 minutes after the start time — the exact time is on each event's page.",
+    a: "Your arrival time is shown on your invitation — please be seated by then.",
   },
   {
     q: "Is there a dress code?",

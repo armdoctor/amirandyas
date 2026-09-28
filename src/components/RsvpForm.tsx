@@ -66,7 +66,7 @@ export function RsvpForm({ primaryId, members, initialMessage, notePrompt, demo 
     setResult(null);
     const unanswered = states.some((s, i) => members[i].invitedTo.some((k) => s.attending[k] == null));
     if (unanswered) {
-      setResult({ ok: false, error: "Please answer yes or no for every celebration listed." });
+      setResult({ ok: false, error: "Please answer yes or no above." });
       return;
     }
     if (!message.trim()) {
@@ -150,7 +150,6 @@ export function RsvpForm({ primaryId, members, initialMessage, notePrompt, demo 
           <legend className="-mb-2 px-2 font-serif text-2xl text-ink">Plus one</legend>
           <YesNoRow
             title="Will you be bringing a plus one?"
-            sub="They'll join you at the celebrations you're attending."
             value={states[0].plusOneAttending}
             onChange={(v) => patch(0, { plusOneAttending: v })}
           />

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { requireHousehold, serializeMembers } from "@/lib/household";
-import { EVENTS, eventBySlug } from "@/lib/events";
+import { eventBySlug } from "@/lib/events";
 import { pickPromptForId } from "@/lib/notePrompts";
 import { DEMO_MODE } from "@/lib/config";
 import { RsvpForm } from "@/components/RsvpForm";
@@ -20,7 +20,6 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   const single = household.events.length === 1;
   const invitedHere = household.members.filter((m) => m.invitedTo.includes(event.key));
-  const others = household.events.filter((k) => k !== event.key);
 
   return (
     <main className="relative min-h-svh bg-sand-100">
@@ -45,7 +44,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <p className="text-center font-serif text-2xl italic leading-relaxed text-ink">{event.blurb}</p>
         {!single && invitedHere.length < household.members.length && (
           <p className="mt-6 text-center text-sm text-ink-soft">
-            Invited to this one: {invitedHere.map((m) => m.firstName).join(", ")}
+            Joining us here: {invitedHere.map((m) => m.firstName).join(", ")}
           </p>
         )}
       </Section>
@@ -83,10 +82,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <Section>
           <div className="rounded-sm border border-sand-300 bg-sand-50 p-8 text-center">
             <p className="text-[11px] uppercase tracking-[0.3em] text-gold">RSVP</p>
-            <p className="mt-3 font-serif text-2xl text-ink">One reply for all your celebrations</p>
+            <p className="mt-3 font-serif text-2xl text-ink">Your RSVP</p>
             <p className="mt-2 font-serif text-lg text-ink-soft">
-              You&rsquo;re also invited to {others.map((k) => EVENTS[k].name).join(", ").replace(/, ([^,]*)$/, " and $1")}.
-              Your RSVP for everything lives on your main invitation.
+              Your household replies once, on your main invitation page.
             </p>
             <Link
               href="/invite#rsvp"

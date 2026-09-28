@@ -23,7 +23,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ r
         {/* Fade the bottom of the photo into the page. */}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-sand-100" />
         <div className="film-grain relative z-10 flex h-full flex-col items-center px-6 pt-14 text-center sm:pt-20">
-          <p className="rise text-[11px] uppercase tracking-[0.35em] text-ink/70 sm:tracking-[0.5em]">13 – 15 March 2027 · Singapore</p>
+          <p className="rise text-[11px] uppercase tracking-[0.35em] text-ink/70 sm:tracking-[0.5em]">March 2027 · Singapore</p>
           <Names className="rise rise-2 mt-6 text-[clamp(3.5rem,11vw,8rem)] text-ink" />
           <p className="rise rise-3 mt-5 max-w-md font-serif text-xl italic text-ink/80">
             are getting married — and we&rsquo;d love for you to be there.

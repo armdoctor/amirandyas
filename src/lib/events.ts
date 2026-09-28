@@ -55,7 +55,7 @@ export const EVENTS: Record<EventKey, EventInfo> = {
     photo: "/photos/sky.jpg",
     photoPosition: "center 85%",
     heroAlign: "top",
-    blurb: "Where it all begins — our nikah, surrounded by those closest to us.",
+    blurb: "Our nikah, witnessed by those closest to us.",
   },
   yasminFamily: {
     key: "yasminFamily",
