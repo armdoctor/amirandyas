@@ -54,12 +54,7 @@ export function RsvpForm({ primaryId, members, initialMessage, notePrompt, demo 
   function setAttending(idx: number, key: EventKey, v: boolean) {
     setStates((prev) => prev.map((s, i) => (i === idx ? { ...s, attending: { ...s.attending, [key]: v } } : s)));
   }
-  function setAll(idx: number, v: boolean) {
-    const m = members[idx];
-    const next: Attendance = {};
-    for (const k of m.invitedTo) next[k] = v;
-    patch(idx, { attending: next });
-  }
+
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -106,18 +101,6 @@ export function RsvpForm({ primaryId, members, initialMessage, notePrompt, demo 
                 <span className="text-[10px] uppercase tracking-[0.25em] text-ink-soft">· you</span>
               )}
             </legend>
-
-            {keys.length > 1 && (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] uppercase tracking-[0.2em] text-ink-soft">
-                <span>Quick fill:</span>
-                <button type="button" onClick={() => setAll(idx, true)} className="underline decoration-sand-400 underline-offset-4 hover:text-ink">
-                  Yes to all
-                </button>
-                <button type="button" onClick={() => setAll(idx, false)} className="underline decoration-sand-400 underline-offset-4 hover:text-ink">
-                  Can&rsquo;t make any
-                </button>
-              </div>
-            )}
 
             <div className="divide-y divide-sand-200">
               {keys.map((k) => (
