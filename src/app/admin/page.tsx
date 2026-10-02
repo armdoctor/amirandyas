@@ -1,5 +1,6 @@
 import { adminLogout } from "@/app/actions/admin-auth";
-import { listGuests } from "@/lib/store";
+import { listDeletedInvites, listGuests } from "@/lib/store";
+import { DeletedInvites } from "@/components/admin/DeletedInvites";
 import { computeStats } from "@/lib/stats";
 import { DEMO_MODE } from "@/lib/config";
 import { AdminBody } from "@/components/admin/AdminBody";
@@ -9,7 +10,7 @@ import { Brand } from "@/components/admin/Brand";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const guests = await listGuests();
+  const [guests, deleted] = await Promise.all([listGuests(), listDeletedInvites()]);
   const stats = computeStats(guests);
 
   return (
@@ -43,6 +44,9 @@ export default async function AdminDashboard() {
       )}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <AdminBody guests={guests} stats={stats} />
+        <div className="mt-8">
+          <DeletedInvites items={deleted} />
+        </div>
       </main>
     </div>
   );

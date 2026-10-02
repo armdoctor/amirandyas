@@ -66,6 +66,7 @@ export async function submitRsvp(payload: RsvpPayload): Promise<RsvpResult> {
         },
       };
     }),
+    { action: "rsvp", actor: "guest" },
   );
 
   revalidatePath("/admin");

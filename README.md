@@ -14,27 +14,24 @@ Next.js 16 (App Router) + Tailwind 4. Guests sign in with their full name, see o
 
 Edit any of these in `src/lib/events.ts`.
 
-## Preview mode (current)
+## Data
 
-`DEMO_MODE` is on unless set to `"0"`. The site runs with sample guests held in memory — **nothing is saved permanently** and data can reset whenever Vercel spins up a fresh server. No environment variables are required.
+Guests and RSVPs live in Amir & Yasmin's own Neon Postgres database (`amirandyasmin-guests`), connected only to the `amirandyas` Vercel project. Migrations run automatically on deploy. See `AGENTS.md` for the safety net that protects the data.
 
-Sample guests to try: Rashid Hamzah, Aisyah Rahman, Daniel Lim, Hassan Ali, Zulkifli Abdullah (or a household member like Noraini Hamzah to see the "managed by" page).
+Required env vars on Vercel: `DATABASE_URL` (+ `DATABASE_URL_UNPOOLED`, both set by the Neon integration), `SESSION_SECRET`, `ADMIN_PASSWORD`.
 
-Dashboard: `/admin` — preview password `amiryasmin2027` (override with `ADMIN_PASSWORD`).
+## Preview mode (no database)
+
+Set `DEMO_MODE="1"` to run with in-memory sample guests (nothing saved) — for local design work only.
 
 ## Run locally
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000
+# .env: DATABASE_URL pointing at a Neon BRANCH of the database (never main), SESSION_SECRET, ADMIN_PASSWORD
+npm run dev
 ```
 
-## Deploy to Vercel
+## Deploy
 
-1. Push this folder to a **new** GitHub repo (e.g. `amirandyasmin`).
-2. Vercel → Add New → Project → import that repo. Framework: Next.js. No env vars needed for preview.
-3. Optional: set `ADMIN_PASSWORD` and `SESSION_SECRET` in Project → Settings → Environment Variables.
-
-## Going live later
-
-Connect a new, dedicated database (not Azure & Lauren's), reimplement `src/lib/store.ts` against it, set `DEMO_MODE=0`, `SESSION_SECRET` and `ADMIN_PASSWORD`, and load the real guest list via Import CSV on the dashboard. See `AGENTS.md` for the data-safety rules.
+Push to `main` on GitHub (`armdoctor/amirandyas`); Vercel builds and deploys automatically. The build refuses to deploy if a migration contains destructive SQL.

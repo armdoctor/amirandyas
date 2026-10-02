@@ -1,9 +1,3 @@
-// Preview/demo mode is ON unless DEMO_MODE is explicitly "0".
-export const DEMO_MODE = process.env.DEMO_MODE !== "0";
-
-export const COUPLE = {
-  bride: "Yasmin",
-  groom: "Amir",
-  // Shown in "reach out to…" copy. Update once the couple confirms a contact.
-  contactLine: "Reach out to Amir or Yasmin directly",
-};
+// Preview/demo mode (in-memory sample guests, nothing saved) is OFF unless
+// DEMO_MODE is explicitly "1". Production always uses the real database.
+export const DEMO_MODE = process.env.DEMO_MODE === "1";

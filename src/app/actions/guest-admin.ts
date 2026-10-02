@@ -6,7 +6,8 @@ import { EVENT_KEYS } from "@/lib/events";
 import { isAdmin } from "@/lib/auth";
 import {
   createInvite,
-  deleteGuestRecord,
+  deleteInvite,
+  restoreDeletedInvite,
   findGuestsByFullNames,
   fullNameOf,
   getGuest,
@@ -71,6 +72,7 @@ export async function addGuest(payload: AddGuestPayload): Promise<ActionResult> 
   await createInvite(
     { firstName: data.firstName, lastName: data.lastName, invitedTo: data.invitedTo, plusOneAllowed: data.plusOneAllowed },
     data.members.map((m) => ({ ...m, plusOneAllowed: false })),
+    { action: "admin_add", actor: "admin" },
   );
   revalidatePath("/admin");
   return { ok: true };
@@ -113,7 +115,7 @@ export async function updateGuest(id: string, payload: UpdateGuestPayload): Prom
     ...(data.plusOneName !== undefined ? { plusOneName: plusOneAllowed ? data.plusOneName || null : null } : {}),
     ...(data.plusOneDietary !== undefined ? { plusOneDietary: plusOneAllowed ? data.plusOneDietary || null : null } : {}),
     ...(data.message !== undefined ? { message: existing.isPrimaryContact ? data.message || null : null } : {}),
-  });
+  }, { action: "admin_update", actor: "admin" });
 
   revalidatePath("/admin");
   return { ok: true };
@@ -122,8 +124,16 @@ export async function updateGuest(id: string, payload: UpdateGuestPayload): Prom
 export async function deleteGuest(id: string): Promise<ActionResult> {
   const d = await denied();
   if (d) return d;
-  const ok = await deleteGuestRecord(id);
+  const ok = await deleteInvite(id, { action: "admin_delete", actor: "admin" });
   if (!ok) return { ok: false, error: "Guest not found." };
   revalidatePath("/admin");
   return { ok: true };
+}
+
+export async function restoreInvite(logId: string): Promise<ActionResult> {
+  const d = await denied();
+  if (d) return d;
+  const r = await restoreDeletedInvite(logId, { action: "admin_restore", actor: "admin" });
+  if (r.ok) revalidatePath("/admin");
+  return r;
 }

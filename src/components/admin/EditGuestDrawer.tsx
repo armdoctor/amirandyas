@@ -161,6 +161,11 @@ export function EditGuestDrawer({ guest, inviteSize, onClose }: { guest: Guest; 
               <p className="text-sm text-neutral-700">
                 Delete <span className="font-medium text-neutral-900">{guest.fullName}</span>
                 {isPrimary && inviteSize > 1 ? ` and ${inviteSize - 1} household member${inviteSize - 1 === 1 ? "" : "s"}?` : "?"}
+                {guest.hasResponded && (
+                  <span className="mt-1 block text-xs text-amber-700">
+                    They&rsquo;ve already RSVP&rsquo;d. You can undo this from &ldquo;Recently deleted&rdquo; below the guest list.
+                  </span>
+                )}
               </p>
               <div className="flex gap-2">
                 <button onClick={() => setConfirmDelete(false)} className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700">

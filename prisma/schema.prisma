@@ -1,0 +1,85 @@
+// Amir & Yasmin — guest list schema.
+// Same shape as the Azure & Lauren project (one Guest table, household via
+// primaryGuestId, per-event invite/attendance columns), extended to five events,
+// plus an append-only AuditLog so no RSVP or guest record can be silently lost.
+//
+// ⚠️  DATA SAFETY: read AGENTS.md before changing anything in this file.
+//     Renaming a field = DROP + ADD in Prisma = data loss. Use a manual
+//     `ALTER TABLE ... RENAME COLUMN` migration instead.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  runtime      = "nodejs"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Guest {
+  id        String @id @default(cuid())
+  firstName String
+  lastName  String
+  fullName  String @unique
+
+  // Household
+  isPrimaryContact Boolean @default(true)
+  primaryGuestId   String?
+  primary          Guest?  @relation("Household", fields: [primaryGuestId], references: [id], onDelete: SetNull)
+  members          Guest[] @relation("Household")
+
+  // Invitation flags — one per event (see src/lib/events.ts)
+  invitedToNikah         Boolean @default(false)
+  invitedToYasminFamily  Boolean @default(false)
+  invitedToYasminFriends Boolean @default(false)
+  invitedToAmirFriends   Boolean @default(false)
+  invitedToAmirFamily    Boolean @default(false)
+
+  // Only meaningful for solo primaries (households have no plus-ones)
+  plusOneAllowed Boolean @default(false)
+
+  // RSVP state — null until answered
+  hasResponded           Boolean  @default(false)
+  attendingNikah         Boolean?
+  attendingYasminFamily  Boolean?
+  attendingYasminFriends Boolean?
+  attendingAmirFriends   Boolean?
+  attendingAmirFamily    Boolean?
+  dietaryRestrictions    String?
+
+  // Plus-one (only used when plusOneAllowed AND solo)
+  plusOneAttending Boolean?
+  plusOneName      String?
+  plusOneDietary   String?
+
+  // Answer to the household's question for the couple
+  message     String?
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([primaryGuestId])
+}
+
+// Append-only history of every change to the guest list: each RSVP, admin
+// edit, import and delete stores a full snapshot. No foreign key to Guest on
+// purpose — entries survive the guest being deleted, so anything can be
+// restored. The app never updates or deletes rows here (enforced in db.ts).
+model AuditLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  action    String // rsvp | admin_add | admin_update | admin_delete | admin_restore | import
+  actor     String // guest | admin
+  guestId   String?
+  guestName String?
+  before    Json?
+  after     Json?
+  // For admin_restore entries: the id of the admin_delete entry it undid.
+  refLogId  String?
+
+  @@index([guestId])
+  @@index([action, createdAt])
+}

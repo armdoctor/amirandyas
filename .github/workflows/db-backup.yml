@@ -1,0 +1,54 @@
+name: Daily DB backup
+
+# Daily pg_dump of Amir & Yasmin's database, stored as a GitHub Actions
+# artifact (kept 90 days). Requires a repo secret named DATABASE_URL with
+# the Neon connection string — the SAME one Vercel uses for this project
+# (never Azure & Lauren's).
+#
+# Manual run: Actions → "Daily DB backup" → Run workflow.
+
+on:
+  schedule:
+    - cron: "30 18 * * *" # 02:30 Singapore time
+  workflow_dispatch: {}
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check DATABASE_URL secret is set
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Repo secret DATABASE_URL is not set. Add it under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Install Postgres 17 client
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: pg_dump
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          STAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          mkdir -p backup
+          /usr/lib/postgresql/17/bin/pg_dump --no-owner --no-acl --format=plain "$DATABASE_URL" \
+            | gzip -9 > "backup/amir-yasmin-db-$STAMP.sql.gz"
+          ls -lh backup/
+          # Fail loudly if the dump is suspiciously small (e.g. empty/wrong DB).
+          test $(stat -c%s backup/*.sql.gz) -gt 500
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amir-yasmin-db-backup-${{ github.run_id }}
+          path: backup/*.sql.gz
+          retention-days: 90
+          if-no-files-found: error

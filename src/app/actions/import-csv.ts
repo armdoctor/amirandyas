@@ -27,6 +27,7 @@ export async function importGuestsCsv(text: string): Promise<ImportResult> {
     const p = await createInvite(
       { firstName: r.firstName, lastName: r.lastName, invitedTo: r.invitedTo, plusOneAllowed: r.plusOneAllowed },
       [],
+      { action: "import", actor: "admin" },
     );
     primaryIds.set(r.fullName.toLowerCase(), p.id);
     created++;
@@ -38,7 +39,7 @@ export async function importGuestsCsv(text: string): Promise<ImportResult> {
       skipped++;
       continue;
     }
-    await createMember(pid, { firstName: r.firstName, lastName: r.lastName, invitedTo: r.invitedTo, plusOneAllowed: false });
+    await createMember(pid, { firstName: r.firstName, lastName: r.lastName, invitedTo: r.invitedTo, plusOneAllowed: false }, { action: "import", actor: "admin" });
     created++;
   }
 

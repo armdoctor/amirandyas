@@ -1,0 +1,26 @@
+name: Check migrations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prisma/migrations/**"
+      - "scripts/check-destructive-migrations.mjs"
+      - ".github/workflows/check-migrations.yml"
+  pull_request:
+    paths:
+      - "prisma/migrations/**"
+      - "scripts/check-destructive-migrations.mjs"
+      - ".github/workflows/check-migrations.yml"
+
+jobs:
+  scan:
+    name: Scan for destructive SQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node scripts/check-destructive-migrations.mjs
